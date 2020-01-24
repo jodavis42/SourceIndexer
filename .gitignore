@@ -1,0 +1,26 @@
+# use glob syntax.
+syntax: glob
+
+# visual studio files
+*.ncb
+*.suo
+*.user
+*.orig
+*.db
+*.sdf
+*.opensdf
+*.ipch
+*.tlog
+*.pdb
+*.lastbuildstate
+*.log
+*.unsuccessfulbuild
+*.idb
+*.cd
+*.opendb
+*.db-shm
+*.db-wal
+.vs/
+bin/
+obj/
+
