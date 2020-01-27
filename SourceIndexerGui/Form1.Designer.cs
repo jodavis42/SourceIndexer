@@ -42,6 +42,8 @@
       this.panel1 = new System.Windows.Forms.Panel();
       this.label1 = new System.Windows.Forms.Label();
       this.SourceRootTextBox = new System.Windows.Forms.TextBox();
+      this.BackendComboBox = new System.Windows.Forms.ComboBox();
+      this.label2 = new System.Windows.Forms.Label();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -167,6 +169,8 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.label2);
+      this.panel1.Controls.Add(this.BackendComboBox);
       this.panel1.Controls.Add(this.label1);
       this.panel1.Controls.Add(this.PdbPath);
       this.panel1.Controls.Add(this.SourceRootTextBox);
@@ -197,6 +201,23 @@
       this.SourceRootTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
       this.SourceRootTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
       // 
+      // BackendComboBox
+      // 
+      this.BackendComboBox.FormattingEnabled = true;
+      this.BackendComboBox.Location = new System.Drawing.Point(556, 29);
+      this.BackendComboBox.Name = "BackendComboBox";
+      this.BackendComboBox.Size = new System.Drawing.Size(121, 21);
+      this.BackendComboBox.TabIndex = 2;
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(490, 32);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(50, 13);
+      this.label2.TabIndex = 3;
+      this.label2.Text = "Backend";
+      // 
       // Form1
       // 
       this.AllowDrop = true;
@@ -209,6 +230,7 @@
       this.Controls.Add(this.EvaluateButton);
       this.Name = "Form1";
       this.Text = "Form1";
+      this.Load += new System.EventHandler(this.Form1_Load);
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
@@ -235,6 +257,8 @@
     private System.Windows.Forms.RichTextBox StreamRichTextBox;
     private System.Windows.Forms.TabPage tabPage3;
     private System.Windows.Forms.RichTextBox UnindexedRichTextBox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.ComboBox BackendComboBox;
   }
 }
 

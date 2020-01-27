@@ -13,8 +13,10 @@ namespace SourceIndexer
     {
       string pdbPath = Path.GetFullPath(args[0]);
       string sourceRoot = Path.GetFullPath(args[1]);
-      var indexer = new GitHubSourceIndexer();
+      var indexer = new SourceIndexer();
       indexer.Logger = new ConsoleLogger();
+      indexer.FrontEnd = new GitFrontEnd();
+      indexer.BackEnd = new CmdBackEnd();
       indexer.SetSourceRoot(sourceRoot);
       indexer.FullPdbPath = pdbPath;
       indexer.RunSourceIndexing();

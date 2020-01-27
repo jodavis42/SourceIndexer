@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SourceIndexer
 {
-
-  public class GitHubSourceIndexer : GitSourceIndexer
+  public class GitHubBackEnd : IBackEnd
   {
-    public override string BuildSrcSrvStream(List<SourceFile> files)
+    public override string ToString()
     {
-      PopulateFiles(files);
-
+      return "GitHub";
+    }
+    public override string BuildSrcSrvStream(List<RepositoryInfo> repositories)
+    {
       var builder = new StringBuilder();
       builder.AppendLine("SRCSRV: ini ------------------------------------------------");
       builder.AppendLine("VERSION=1");
@@ -20,7 +24,7 @@ namespace SourceIndexer
       builder.AppendLine("HTTP_EXTRACT_TARGET=%HTTP_ALIAS%%var2%/%var3%/%var4%/%var5%");
       builder.AppendLine("SRCSRVTRG=%HTTP_EXTRACT_TARGET%");
       builder.AppendLine("SRCSRV: source files ---------------------------------------");
-      foreach(var repo in Respositories)
+      foreach (var repo in repositories)
       {
         string organization = "";
         string project = "";
@@ -38,7 +42,7 @@ namespace SourceIndexer
     {
       var regex = new Regex(@"github\.com\/([\d\w-_]+)\/([\d\w-_]+)");
       var match = regex.Match(remoteUrl);
-      if(match.Success)
+      if (match.Success)
       {
         organization = match.Groups[1].Value.ToString();
         project = match.Groups[2].Value.ToString();

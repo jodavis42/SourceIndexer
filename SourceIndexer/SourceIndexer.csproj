@@ -59,16 +59,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Git.cs" />
-    <Compile Include="GitHubSourceIndexer.cs" />
-    <Compile Include="GitSourceIndexer.cs" />
-    <Compile Include="ISourceIndexer.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="SourceIndexerParts\BackEnd.cs" />
+    <Compile Include="SourceIndexerParts\CmdBackEnd.cs" />
+    <Compile Include="SourceIndexerParts\FrontEnd.cs" />
+    <Compile Include="SourceIndexerParts\GitBackEnd.cs" />
+    <Compile Include="Utilities\Git.cs" />
+    <Compile Include="SourceIndexerParts\GitFrontEnd.cs" />
+    <Compile Include="SourceIndexerParts\GitHubBackEnd.cs" />
+    <Compile Include="SourceIndexer.cs" />
+    <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PdbStr.cs" />
-    <Compile Include="SrcTool.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="Utilities\PdbStr.cs" />
+    <Compile Include="Utilities\SrcTool.cs" />
+    <Compile Include="Utilities\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

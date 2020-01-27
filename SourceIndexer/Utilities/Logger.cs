@@ -6,6 +6,10 @@ namespace SourceIndexer
   public class Logger
   {
     public VerbosityLevel Level = VerbosityLevel.Basic;
+    public bool IsVerboseEnough(VerbosityLevel level)
+    {
+      return level <= Level;
+    }
     public virtual void Log(VerbosityLevel level, string message)
     {
 
@@ -16,7 +20,7 @@ namespace SourceIndexer
   {
     public override void Log(VerbosityLevel level, string message)
     {
-      if(level <= Level)
+      if(IsVerboseEnough(level))
         Console.WriteLine(message);
     }
   }

@@ -41,7 +41,7 @@ namespace SourceIndexer
       EvaluateResults(indexer);
     }
 
-    private void EvaluateResults(ISourceIndexer sourceIndexer)
+    private void EvaluateResults(SourceIndexer sourceIndexer)
     {
       this.EvaluatedRichTextBox.Text = this.NormalizeNewlines(sourceIndexer.EvaluateSourceIndexing());
       this.StreamRichTextBox.Text = this.NormalizeNewlines(sourceIndexer.GetSourceIndexingResults());
@@ -52,11 +52,13 @@ namespace SourceIndexer
       return Regex.Replace(data, @"\r\n|\n\r|\n|\r", "\r\n");
     }
 
-    private ISourceIndexer CreateSourceIndexer()
+    private SourceIndexer CreateSourceIndexer()
     {
-      var indexer = new GitHubSourceIndexer();
+      var indexer = new SourceIndexer();
       indexer.FullPdbPath = this.PdbPathTextBox.Text;
       indexer.SetSourceRoot(this.SourceRootTextBox.Text);
+      indexer.FrontEnd = new GitFrontEnd();
+      indexer.BackEnd = BackendComboBox.SelectedItem as IBackEnd;
       return indexer;
     }
 
@@ -70,6 +72,14 @@ namespace SourceIndexer
     private void OnDragEnter(object sender, DragEventArgs e)
     {
       e.Effect = DragDropEffects.All;
+    }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+      this.BackendComboBox.Items.Add(new CmdBackEnd());
+      this.BackendComboBox.Items.Add(new GitBackEnd());
+      this.BackendComboBox.Items.Add(new GitHubBackEnd());
+      this.BackendComboBox.SelectedIndex = 0;
     }
   }
 }
