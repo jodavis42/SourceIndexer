@@ -43,9 +43,14 @@ namespace SourceIndexer
 
     private void EvaluateResults(SourceIndexer sourceIndexer)
     {
-      this.EvaluatedRichTextBox.Text = this.NormalizeNewlines(sourceIndexer.EvaluateSourceIndexing());
-      this.StreamRichTextBox.Text = this.NormalizeNewlines(sourceIndexer.GetSourceIndexingResults());
-      this.UnindexedRichTextBox.Text = this.NormalizeNewlines(sourceIndexer.GetUnindexedList());
+      var pdbPath = this.PdbPathTextBox.Text;
+      var debugStreams = sourceIndexer.GetDebugStreams(pdbPath);
+      if(debugStreams != null)
+      {
+        this.EvaluatedRichTextBox.Text = this.NormalizeNewlines(debugStreams.EvaluatedResults);
+        this.StreamRichTextBox.Text = this.NormalizeNewlines(debugStreams.RawResults);
+        this.UnindexedRichTextBox.Text = this.NormalizeNewlines(debugStreams.UnindexedResults);
+      }
     }
     string NormalizeNewlines(string data)
     {
@@ -54,9 +59,13 @@ namespace SourceIndexer
 
     private SourceIndexer CreateSourceIndexer()
     {
+      var config = new SourceIndexerConfig();
+      config.ExtractDebugStreams = true;
+      config.FastMode = true;
+      config.SourceRoot = this.SourceRootTextBox.Text;
       var indexer = new SourceIndexer();
-      indexer.FullPdbPath = this.PdbPathTextBox.Text;
-      indexer.SetSourceRoot(this.SourceRootTextBox.Text);
+      indexer.Config = config;
+      indexer.PdbPaths.Add(this.PdbPathTextBox.Text);
       indexer.FrontEnd = new GitFrontEnd();
       indexer.BackEnd = BackendComboBox.SelectedItem as IBackEnd;
       return indexer;

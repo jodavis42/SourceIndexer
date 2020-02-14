@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RepositoryList.cs" />
     <Compile Include="SourceIndexerParts\BackEnd.cs" />
     <Compile Include="SourceIndexerParts\CmdBackEnd.cs" />
     <Compile Include="SourceIndexerParts\FrontEnd.cs" />

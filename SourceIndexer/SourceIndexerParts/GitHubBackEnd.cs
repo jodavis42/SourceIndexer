@@ -13,7 +13,7 @@ namespace SourceIndexer
     {
       return "GitHub";
     }
-    public override string BuildSrcSrvStream(List<RepositoryInfo> repositories)
+    public override string BuildSrcSrvStream(RepositoryList repositories)
     {
       var builder = new StringBuilder();
       builder.AppendLine("SRCSRV: ini ------------------------------------------------");
@@ -24,7 +24,7 @@ namespace SourceIndexer
       builder.AppendLine("HTTP_EXTRACT_TARGET=%HTTP_ALIAS%%var2%/%var3%/%var4%/%var5%");
       builder.AppendLine("SRCSRVTRG=%HTTP_EXTRACT_TARGET%");
       builder.AppendLine("SRCSRV: source files ---------------------------------------");
-      foreach (var repo in repositories)
+      foreach (var repo in repositories.Repositories)
       {
         string organization = "";
         string project = "";
@@ -46,7 +46,7 @@ namespace SourceIndexer
       {
         organization = match.Groups[1].Value.ToString();
         project = match.Groups[2].Value.ToString();
-        Logger.Log(VerbosityLevel.Detailed, string.Format("Repo '{0}' found with organization '{1}' and project '{2}'", remoteUrl, organization, project));
+        Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Repo '{0}' found with organization '{1}' and project '{2}'", remoteUrl, organization, project));
         return true;
       }
       return false;

@@ -12,7 +12,7 @@ namespace SourceIndexer
     {
       return "Cmd";
     }
-    public override string BuildSrcSrvStream(List<RepositoryInfo> repositories)
+    public override string BuildSrcSrvStream(RepositoryList repositories)
     {
       var builder = new StringBuilder();
       builder.AppendLine("SRCSRV: ini ------------------------------------------------");
@@ -23,7 +23,7 @@ namespace SourceIndexer
       builder.AppendLine(@"SRCSRVTRG=%targ%\%var4%\%var5%");
       builder.AppendLine("SRCSRVCMD=%fnvar%(SRCLOCATION) \"%var2%\" \"%var3%\" \"%var4%\" \"%var5%\" %SRCSRVTRG%");
       builder.AppendLine("SRCSRV: source files ---------------------------------------");
-      foreach (var repo in repositories)
+      foreach (var repo in repositories.Repositories)
       {
         foreach (var file in repo.SourceFiles)
         {

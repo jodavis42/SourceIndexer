@@ -9,62 +9,79 @@ namespace SourceIndexer
 {
   public class GitFrontEnd : IFrontEnd
   {
-    protected List<RepositoryInfo> Repositories = new List<RepositoryInfo>();
-    public override void SetSourceRoot(string sourceRoot)
+    public override void EvaluateFiles(List<SourceFile> pdbFiles, RepositoryList repositories)
     {
-      base.SetSourceRoot(sourceRoot);
-      FindRepositories(sourceRoot);
-    }
-
-    public override void EvaluateFiles(List<SourceFile> pdbFiles)
-    {
-      foreach (var repo in Repositories)
+      foreach (var repo in repositories.Repositories)
       {
-        var gitFiles = Git.GetFileList(repo.RepositoryPath);
-
-        if (Logger.IsVerboseEnough(VerbosityLevel.Detailed))
-        {
-          Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo {0} at '{1}' has file list:", repo.Location, repo.RepositoryPath));
-          foreach (var file in gitFiles)
-          {
-            Logger.Log(VerbosityLevel.Detailed, string.Format("  {0}", file));
-          }
-        }
-
         List<SourceFile> remainingPdbFiles = new List<SourceFile>();
-        Utilities.FindSourceFileIntersection(pdbFiles, repo.RepositoryPath, gitFiles, ref repo.SourceFiles, ref remainingPdbFiles, Logger);
+        Utilities.FindSourceFileIntersection(pdbFiles, repo.RepositoryPath, repo.SourceFiles, ref repo.SourceFiles, ref remainingPdbFiles, Config.Logger);
         pdbFiles = remainingPdbFiles;
 
 
-        Logger.Log(VerbosityLevel.Basic, string.Format("Repository {0} found with {1} matching files:", repo.Location, repo.SourceFiles.Count));
-        if (Logger.IsVerboseEnough(VerbosityLevel.Detailed))
+        Config.Logger.Log(VerbosityLevel.Basic, string.Format("Repository {0} found with {1} matching files:", repo.Location, repo.SourceFiles.Count));
+        if (Config.Logger.IsVerboseEnough(VerbosityLevel.Detailed))
         {
           foreach (var file in repo.SourceFiles)
           {
-            Logger.Log(VerbosityLevel.Detailed, string.Format("  {0}", file.FullPath));
+            Config.Logger.Log(VerbosityLevel.Detailed, string.Format("  {0}", file.FullPath));
           }
         }
       }
     }
-    public override List<RepositoryInfo> GetRepositoryInfo()
+    public override RepositoryList GetRepositoryList(bool recursive)
     {
-      return Repositories;
+      return FindRepositories(Config.SourceRoot);
     }
-    protected void FindRepositories(string sourceRoot)
+    protected RepositoryList FindRepositories(string sourceRoot)
     {
+      var repositories = new RepositoryList();
+      repositories.SourceRoot = sourceRoot;
+
       var repos = Git.FindSubModules(sourceRoot);
+
+      var tasks = new List<Task>();
       foreach (var repo in repos)
       {
-        RepositoryInfo repoInfo = new RepositoryInfo();
-        repoInfo.RepositoryName = Path.GetFileName(repo);
-        repoInfo.RepositoryType = "git";
-        repoInfo.RepositoryPath = repo;
-        repoInfo.CurrentId = Git.GetRevisionSha(repo);
-        repoInfo.Location = Git.FindRemoteUrl(repo);
-        Repositories.Add(repoInfo);
+        var task = new Task(() =>
+        {
+          RepositoryInfo repoInfo = new RepositoryInfo();
+          repoInfo.RepositoryName = Path.GetFileName(repo);
+          repoInfo.RepositoryType = "git";
+          repoInfo.RepositoryPath = repo;
+          repoInfo.CurrentId = Git.GetRevisionSha(repo);
+          repoInfo.Location = Git.FindRemoteUrl(repo);
+          var gitFiles = Git.GetFileList(repoInfo.RepositoryPath);
 
-        Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module {0} at sha {1} with remote {2}", repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.Location));
+          Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo {0} at '{1}' has file list:", repoInfo.Location, repoInfo.RepositoryPath));
+          foreach (var relativePath in gitFiles)
+          {
+            var sourceFile = new SourceFile();
+            try
+            {
+              var fullPath = Path.Combine(sourceRoot, relativePath);
+              sourceFile.FullPath = Path.GetFullPath(fullPath);
+              sourceFile.RelativePath = relativePath;
+              sourceFile.PdbFilePath = sourceFile.FullPath;
+              repoInfo.SourceFiles.Add(sourceFile);
+
+              
+              Config.Logger.Log(VerbosityLevel.Detailed, string.Format("  {0}", fullPath));
+            }
+            catch(Exception)
+            {
+
+            }
+            
+          }
+
+          repositories.Repositories.Add(repoInfo);
+          Config.Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module {0} at sha {1} with remote {2}", repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.Location));
+        });
+        task.Start();
+        tasks.Add(task);
       }
+      Task.WaitAll(tasks.ToArray());
+      return repositories;
     }
 
   }

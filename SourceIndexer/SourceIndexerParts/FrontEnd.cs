@@ -8,15 +8,9 @@ namespace SourceIndexer
 {
   public abstract class IFrontEnd
   {
-    string SourceRoot;
-    public Logger Logger = new Logger();
+    public SourceIndexerConfig Config = null;
 
-    public virtual void SetSourceRoot(string sourceRoot)
-    {
-      SourceRoot = sourceRoot;
-    }
-
-    public abstract void EvaluateFiles(List<SourceFile> pdbFiles);
-    public abstract List<RepositoryInfo> GetRepositoryInfo();
+    public abstract void EvaluateFiles(List<SourceFile> pdbFiles, RepositoryList repositories);
+    public abstract RepositoryList GetRepositoryList(bool recursive);
   }
 }

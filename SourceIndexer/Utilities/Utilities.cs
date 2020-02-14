@@ -27,20 +27,16 @@ namespace SourceIndexer
       }
     }
 
-    public static void FindSourceFileIntersection(List<SourceFile> pdbFiles, string repositoryRoot, List<string> repositoryFiles,
+    public static void FindSourceFileIntersection(List<SourceFile> pdbFiles, string repositoryRoot, List<SourceFile> repositoryFiles,
       ref List<SourceFile> intersectionList, ref List<SourceFile> remainingList, Logger logger)
     {
       var map = new Dictionary<string, SourceFile>();
-      foreach (var relativePath in repositoryFiles)
+      foreach (var repoFile in repositoryFiles)
       {
-        var fullPath = Path.Combine(repositoryRoot, relativePath);
-        // Fix the path to be correct for our OS (deals with slashes)
-        fullPath = Path.GetFullPath(fullPath);
-
         var sourceFile = new SourceFile();
-        sourceFile.FullPath = fullPath;
-        sourceFile.RelativePath = relativePath;
-        map[fullPath.ToLower()] = sourceFile;
+        sourceFile.FullPath = repoFile.FullPath;
+        sourceFile.RelativePath = repoFile.RelativePath;
+        map[repoFile.FullPath.ToLower()] = sourceFile;
 
         logger.Log(VerbosityLevel.Detailed, string.Format("Repo File {0} relative {1}", sourceFile.FullPath, sourceFile.RelativePath));
       }
@@ -63,5 +59,6 @@ namespace SourceIndexer
         }
       }
     }
+
   }
 }

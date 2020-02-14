@@ -5,11 +5,12 @@ namespace SourceIndexer
 {
   public class GitBackEnd : IBackEnd
   {
+    
     public override string ToString()
     {
       return "Git";
     }
-    public override string BuildSrcSrvStream(List<RepositoryInfo> repositories)
+    public override string BuildSrcSrvStream(RepositoryList repositories)
     {
       var builder = new StringBuilder();
       builder.AppendLine("SRCSRV: ini ------------------------------------------------");
@@ -19,7 +20,7 @@ namespace SourceIndexer
       builder.AppendLine(@"SRCSRVTRG=%targ%\%var2%\%var3%\%var4%");
       builder.AppendLine("SRCSRVCMD=git.exe -C \"%fnvar%(%var2%)\" show %var3%:%var4% > %SRCSRVTRG%");
       builder.AppendLine("SRCSRV: source files ---------------------------------------");
-      foreach (var repo in repositories)
+      foreach (var repo in repositories.Repositories)
       {
         foreach (var file in repo.SourceFiles)
         {

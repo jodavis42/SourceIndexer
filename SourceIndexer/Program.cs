@@ -20,21 +20,19 @@ namespace SourceIndexer
 
     [Option("sourceRoot", Required = true, HelpText = "Root directory of the repositories to use for indexing.")]
     public string SourceRoot { get; set; }
-
-    [Option("submodules", Required = false, HelpText = "Should submodules be indexed as well.")]
-    public bool IndexSubmodules { get; set; } = true;
+    [Option('v', "verbose", Required = false, HelpText = "Verbose logging.")]
+    public bool Verbose { get; set; } = false;
+    [Option("fastMode", Required = false, HelpText = "Should all of the files in the source root be used or should they be matched against the pdb (much slower). This seems to work but pdbs have some issues with case sensitivity.")]
+    public bool FastMode { get; set; } = true;
   }
 
   class Program
   {
-    static void ParseSucceeded(Options options)
+    static List<string> FindPdbPaths(Options options)
     {
-      var indexer = new SourceIndexer();
-      indexer.Logger = new ConsoleLogger();
-      indexer.FrontEnd = new GitFrontEnd();
-      indexer.BackEnd = new CmdBackEnd();
-      indexer.SetSourceRoot(options.SourceRoot);
+      var results = new List<string>();
 
+      // If no working directory was specified, use the current
       string workingDir = options.WorkingDir;
       if (string.IsNullOrEmpty(workingDir))
         workingDir = Directory.GetCurrentDirectory();
@@ -43,13 +41,33 @@ namespace SourceIndexer
       matcher.AddInclude(options.PdbSearchExpression);
 
       PatternMatchingResult matches = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(workingDir)));
-      foreach(var match in matches.Files)
+      foreach (var match in matches.Files)
       {
         var path = Path.Combine(workingDir, match.Path);
         var pdbPath = Path.GetFullPath(path);
-        indexer.FullPdbPath = pdbPath;
-        indexer.RunSourceIndexing();
+        results.Add(pdbPath);
       }
+      return results;
+    }
+    static void ParseSucceeded(Options options)
+    {
+      var config = new SourceIndexerConfig();
+      config.SourceRoot = options.SourceRoot;
+      config.FastMode = options.FastMode;
+      config.Logger = new ConsoleLogger();
+      if (options.Verbose)
+        config.Logger.Level = VerbosityLevel.Detailed;
+
+      var indexer = new SourceIndexer();
+      indexer.Config = config;
+      indexer.FrontEnd = new GitFrontEnd();
+      indexer.BackEnd = new CmdBackEnd();
+      // Set the source root and fetch the repos as soon as possible (threaded)
+      indexer.CompileSourceRepositories();
+      // Find all pdbs the user requested
+      indexer.PdbPaths = FindPdbPaths(options);
+      // Actually run the source indexing
+      indexer.RunSourceIndexing();
     }
     static void ParseFailed(IEnumerable<Error> errors)
     {
