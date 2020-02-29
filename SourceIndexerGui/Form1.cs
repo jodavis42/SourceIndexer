@@ -45,12 +45,15 @@ namespace SourceIndexer
     {
       var pdbPath = this.PdbPathTextBox.Text;
       var debugStreams = sourceIndexer.GetDebugStreams(pdbPath);
-      if(debugStreams != null)
+      if(debugStreams == null)
       {
-        this.EvaluatedRichTextBox.Text = this.NormalizeNewlines(debugStreams.EvaluatedResults);
-        this.StreamRichTextBox.Text = this.NormalizeNewlines(debugStreams.RawResults);
-        this.UnindexedRichTextBox.Text = this.NormalizeNewlines(debugStreams.UnindexedResults);
+        debugStreams = new SourceIndexerDebugStreams();
+        sourceIndexer.ExtractDebugStreams(pdbPath, debugStreams);
       }
+      
+      this.EvaluatedRichTextBox.Text = this.NormalizeNewlines(debugStreams.EvaluatedResults);
+      this.StreamRichTextBox.Text = this.NormalizeNewlines(debugStreams.RawResults);
+      this.UnindexedRichTextBox.Text = this.NormalizeNewlines(debugStreams.UnindexedResults);
     }
     string NormalizeNewlines(string data)
     {

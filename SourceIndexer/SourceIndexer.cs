@@ -128,7 +128,7 @@ namespace SourceIndexer
       }
     }
 
-    private void ExtractDebugStreams(string pdbPath, SourceIndexerDebugStreams debugStreams)
+    public void ExtractDebugStreams(string pdbPath, SourceIndexerDebugStreams debugStreams)
     {
       debugStreams.UnindexedResults = GetUnindexedList(pdbPath);
       debugStreams.EvaluatedResults = EvaluateSourceIndexing(pdbPath);
