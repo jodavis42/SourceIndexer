@@ -92,6 +92,8 @@ namespace SourceIndexer
 
     private void IndexPdb(string pdbPath)
     {
+      Config.Logger.Log(VerbosityLevel.Basic, string.Format("Indexing pdb '{0}'", pdbPath));
+
       var repositories = Repositories;
       // If we're not in fast mode, we need to prune the list of repo files based upon the pdb file listing
       if (!Config.FastMode)
