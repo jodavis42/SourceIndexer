@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>Natsu4221.SourceIndexer</id>
+        <version>1.0.0.0</version>
+        <description>Source indexer tool</description>
+        <authors>Joshua Davis</authors>
+    </metadata>
+    <!-- Optional 'files' node -->
+</package>
