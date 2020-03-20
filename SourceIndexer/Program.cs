@@ -22,6 +22,8 @@ namespace SourceIndexer
     public string SourceRoot { get; set; }
     [Option('v', "verbose", Required = false, HelpText = "Verbose logging.")]
     public bool Verbose { get; set; } = false;
+    [Option("backend", Required = false, HelpText = "What backend to use for indexing? Options are Git, GitHub, and CMD.")]
+    public string BackendType{ get; set; } = "GitHub";
     [Option("fastMode", Required = false, HelpText = "Should all of the files in the source root be used or should they be matched against the pdb (much slower). This seems to work but pdbs have some issues with case sensitivity.")]
     public bool FastMode { get; set; } = true;
   }
@@ -49,6 +51,19 @@ namespace SourceIndexer
       }
       return results;
     }
+
+    static IBackEnd GetBackend(Options options)
+    {
+      var backendType = options.BackendType.ToLower();
+      if (backendType == "git")
+        return new GitBackEnd();
+      else if (backendType == "github")
+        return new GitHubBackEnd();
+      else if (backendType == "cmd")
+        return new CmdBackEnd();
+      return new CmdBackEnd();
+    }
+
     static void ParseSucceeded(Options options)
     {
       var config = new SourceIndexerConfig();
@@ -61,7 +76,7 @@ namespace SourceIndexer
       var indexer = new SourceIndexer();
       indexer.Config = config;
       indexer.FrontEnd = new GitFrontEnd();
-      indexer.BackEnd = new CmdBackEnd();
+      indexer.BackEnd = GetBackend(options);
       // Set the source root and fetch the repos as soon as possible (threaded)
       indexer.CompileSourceRepositories();
       // Find all pdbs the user requested
