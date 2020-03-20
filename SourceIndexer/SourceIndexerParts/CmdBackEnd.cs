@@ -20,7 +20,7 @@ namespace SourceIndexer
       builder.AppendLine("VERCTRL=GIT");
       builder.AppendLine("SRCSRV: variables------------------------------------------");
       builder.AppendLine(@"SRCLOCATION=%CMD_SOURCE_INDEXER_PATH%");
-      builder.AppendLine(@"SRCSRVTRG=%targ%\%var4%\%var5%");
+      builder.AppendLine(@"SRCSRVTRG=%fnbksl%(%targ%\%var4%\%var5%)");
       builder.AppendLine("SRCSRVCMD=%fnvar%(SRCLOCATION) \"%var2%\" \"%var3%\" \"%var4%\" \"%var5%\" %SRCSRVTRG%");
       builder.AppendLine("SRCSRV: source files ---------------------------------------");
       foreach (var repo in repositories.Repositories)
