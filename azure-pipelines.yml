@@ -1,0 +1,61 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-2019'
+  
+variables:
+  Configuration: Release
+  Major: '1'
+  Minor: '0'
+  Patch: '1'
+
+steps:
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: 
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/SourceIndexer.sln'
+    feedsToUse: 'select'
+- task: MSBuild@1
+  inputs:
+    solution: '**/SourceIndexer.sln'
+    msbuildArchitecture: 'x64'
+    platform: 'any cpu'
+    configuration: '$(Configuration)'
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    SymbolServerType: 'TeamServices'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'SourceIndexer/bin/$(Configuration)'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'SourceIndexer/bin/$(Configuration)'
+    Contents: '**'
+    TargetFolder: '$(Pipeline.Workspace)'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'SourceIndexer'
+    publishLocation: 'Container'
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**\SourceIndexer.nuspec'
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
+    basePath: '$(Build.ArtifactStagingDirectory)'
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'c3b89593-823f-4af1-917c-1a9cabbf774c'
