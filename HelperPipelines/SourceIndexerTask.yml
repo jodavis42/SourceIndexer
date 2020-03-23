@@ -1,0 +1,33 @@
+# This is a template yaml script to be used within other pipelines to run source indexing
+
+parameters:
+  SourceRoot: '$(Build.Repository.LocalPath)'
+  WorkingDir: '$(Build.BinariesDirectory)'
+  SearchPattern: '**.pdb'
+  BackendType: 'GitHub'
+  InstallPath: '$(Pipeline.Workspace)\CustomTools\SourceIndexer'
+  VerboseMode: '-v'
+
+steps:
+  - task: NuGetToolInstaller@1
+    displayName: 'Installing Nuget'
+    continueOnError: true
+    inputs:
+      versionSpec: 
+
+  - task: DownloadPackage@1
+    displayName: 'Downloading Source Indexer'
+    continueOnError: true
+    inputs:
+      packageType: 'nuget'
+      feed: '/c3b89593-823f-4af1-917c-1a9cabbf774c'
+      view: '084f7b5d-8ad2-4443-88da-28dab062cd3e'
+      definition: 'bb4b0649-efaa-48f3-afd0-3c148f3cf82a'
+      version: '1.0.1-CI-20200320-024852'
+      downloadPath: '${{parameters.InstallPath}}'
+
+  - task: CmdLine@2
+    displayName: 'Source Indexing'
+    continueOnError: true
+    inputs:
+      script: '${{parameters.InstallPath}}\SourceIndexer.exe --sourceRoot ${{parameters.SourceRoot}} --workingDir ${{parameters.WorkingDir}} --pdb ${{parameters.SearchPattern}} --backend ${{parameters.BackendType}} ${{parameters.VerboseMode}}'

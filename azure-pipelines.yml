@@ -6,10 +6,8 @@ pool:
   
 variables:
   Configuration: Release
-  Major: '1'
-  Minor: '0'
-  Patch: '1'
 
+name: '$(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)'
 steps:
 - task: NuGetToolInstaller@1
   inputs:
@@ -48,10 +46,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**\SourceIndexer.nuspec'
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
+    versioningScheme: byBuildNumber
     basePath: '$(Build.ArtifactStagingDirectory)'
 - task: NuGetCommand@2
   inputs:
