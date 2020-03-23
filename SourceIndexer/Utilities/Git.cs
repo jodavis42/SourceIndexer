@@ -43,6 +43,21 @@ namespace SourceIndexer
       return results;
     }
 
+    public static string GetRepoName(string sourcePath)
+    {
+      // The only consistent name for a repo is the name of the remote
+      var remoteUrl = FindRemoteUrl(sourcePath);
+      var regex = new Regex(@".*\/(.*)\.git");
+      Match match = regex.Match(remoteUrl);
+      if (match.Success)
+      {
+        var group = match.Groups[1];
+        return group.ToString();
+      }
+      // If this fails for some reason, fall back to the folder name
+      return Path.GetFileName(sourcePath);
+    }
+
     public static string FindRemoteUrl(string sourcePath)
     {
       return RunGitCommand(sourcePath, "remote get-url --all origin");

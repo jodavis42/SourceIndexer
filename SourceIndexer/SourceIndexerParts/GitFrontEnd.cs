@@ -45,7 +45,7 @@ namespace SourceIndexer
         var task = new Task(() =>
         {
           RepositoryInfo repoInfo = new RepositoryInfo();
-          repoInfo.RepositoryName = Path.GetFileName(repo);
+          repoInfo.RepositoryName = Git.GetRepoName(repo);
           repoInfo.RepositoryType = "git";
           repoInfo.RepositoryPath = repo;
           repoInfo.CurrentId = Git.GetRevisionSha(repo);
@@ -58,7 +58,7 @@ namespace SourceIndexer
             var sourceFile = new SourceFile();
             try
             {
-              var fullPath = Path.Combine(sourceRoot, relativePath);
+              var fullPath = Path.Combine(repoInfo.RepositoryPath, relativePath);
               sourceFile.FullPath = Path.GetFullPath(fullPath);
               sourceFile.RelativePath = relativePath;
               sourceFile.PdbFilePath = sourceFile.FullPath;
