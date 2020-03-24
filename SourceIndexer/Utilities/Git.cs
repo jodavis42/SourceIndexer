@@ -45,10 +45,10 @@ namespace SourceIndexer
 
     public static string GetRepoName(string sourcePath)
     {
-      var name = Path.GetFileNameWithoutExtension(sourcePath);
-
       // The only consistent name for a repo is the name of the remote
       var remoteUrl = FindRemoteUrl(sourcePath);
+      var name = Path.GetFileNameWithoutExtension(remoteUrl);
+
       var regex = new Regex(@".*\/(.*)\.git");
       Match match = regex.Match(remoteUrl);
       if (match.Success)
@@ -57,7 +57,7 @@ namespace SourceIndexer
         name = group.ToString();
       }
 
-      Console.WriteLine("Found repo name '{1}' for path '{0}'", sourcePath, name);
+      Console.WriteLine("Found repo name '{1}' for path '{0}' with remote url '{2}'", sourcePath, name, remoteUrl);
       return name;
     }
 
