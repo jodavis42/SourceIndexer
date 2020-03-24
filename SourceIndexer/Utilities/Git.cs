@@ -43,7 +43,7 @@ namespace SourceIndexer
       return results;
     }
 
-    public static string GetRepoName(string sourcePath)
+    public static string GetRepoName(string sourcePath, Logger logger = null)
     {
       // The only consistent name for a repo is the name of the remote
       var remoteUrl = FindRemoteUrl(sourcePath);
@@ -57,7 +57,9 @@ namespace SourceIndexer
         name = group.ToString();
       }
 
-      Console.WriteLine("Found repo name '{1}' for path '{0}' with remote url '{2}'", sourcePath, name, remoteUrl);
+      if(logger != null)
+        logger.Log(VerbosityLevel.Detailed, string.Format("Found repo name '{1}' for path '{0}' with remote url '{2}'", sourcePath, name, remoteUrl));
+
       return name;
     }
 

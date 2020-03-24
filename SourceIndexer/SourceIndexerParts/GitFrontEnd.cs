@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SourceIndexer
@@ -45,14 +43,14 @@ namespace SourceIndexer
         var task = new Task(() =>
         {
           RepositoryInfo repoInfo = new RepositoryInfo();
-          repoInfo.RepositoryName = Git.GetRepoName(repo);
+          repoInfo.RepositoryName = Git.GetRepoName(repo, Config.Logger);
           repoInfo.RepositoryType = "git";
           repoInfo.RepositoryPath = repo;
           repoInfo.CurrentId = Git.GetRevisionSha(repo);
           repoInfo.Location = Git.FindRemoteUrl(repo);
           var gitFiles = Git.GetFileList(repoInfo.RepositoryPath);
 
-          Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo {0} at '{1}' has file list:", repoInfo.Location, repoInfo.RepositoryPath));
+          Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo '{0}' with remote '{1}' at path '{2}' has file list:", repoInfo.RepositoryName, repoInfo.Location, repoInfo.RepositoryPath));
           foreach (var relativePath in gitFiles)
           {
             var sourceFile = new SourceFile();
@@ -75,7 +73,7 @@ namespace SourceIndexer
           }
 
           repositories.Repositories.Add(repoInfo);
-          Config.Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module {0} at sha {1} with remote {2}", repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.Location));
+          Config.Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module '{0}' at path '{1}' at sha '{2}' with remote '{3}'", repoInfo.RepositoryName, repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.Location));
         });
         task.Start();
         tasks.Add(task);
