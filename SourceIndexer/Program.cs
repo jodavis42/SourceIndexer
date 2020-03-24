@@ -30,7 +30,7 @@ namespace SourceIndexer
 
   class Program
   {
-    static List<string> FindPdbPaths(Options options)
+    static List<string> FindPdbPaths(Options options, Logger logger)
     {
       var results = new List<string>();
 
@@ -38,6 +38,8 @@ namespace SourceIndexer
       string workingDir = options.WorkingDir;
       if (string.IsNullOrEmpty(workingDir))
         workingDir = Directory.GetCurrentDirectory();
+
+      logger.Log(VerbosityLevel.Detailed, string.Format("Searching for pdbs with working directory '{0}' and search pattern '{1}'", workingDir, options.PdbSearchExpression));
 
       Matcher matcher = new Matcher();
       matcher.AddInclude(options.PdbSearchExpression);
@@ -47,20 +49,31 @@ namespace SourceIndexer
       {
         var path = Path.Combine(workingDir, match.Path);
         var pdbPath = Path.GetFullPath(path);
+        logger.Log(VerbosityLevel.Detailed, string.Format("Found pdb '{0}'", pdbPath));
         results.Add(pdbPath);
       }
       return results;
     }
 
-    static IBackEnd GetBackend(Options options)
+    static IBackEnd GetBackend(Options options, Logger logger)
     {
       var backendType = options.BackendType.ToLower();
       if (backendType == "git")
+      {
+        logger.Log(VerbosityLevel.Detailed, "Using git backend");
         return new GitBackEnd();
+      }
       else if (backendType == "github")
+      {
+        logger.Log(VerbosityLevel.Detailed, "Using github backend");
         return new GitHubBackEnd();
+      }
       else if (backendType == "cmd")
+      {
+        logger.Log(VerbosityLevel.Detailed, "Using cmd backend");
         return new CmdBackEnd();
+      }
+      logger.Log(VerbosityLevel.Detailed, "Falling back to cmd backend");
       return new CmdBackEnd();
     }
 
@@ -76,11 +89,11 @@ namespace SourceIndexer
       var indexer = new SourceIndexer();
       indexer.Config = config;
       indexer.FrontEnd = new GitFrontEnd();
-      indexer.BackEnd = GetBackend(options);
+      indexer.BackEnd = GetBackend(options, config.Logger);
       // Set the source root and fetch the repos as soon as possible (threaded)
       indexer.CompileSourceRepositories();
       // Find all pdbs the user requested
-      indexer.PdbPaths = FindPdbPaths(options);
+      indexer.PdbPaths = FindPdbPaths(options, config.Logger);
       // Actually run the source indexing
       indexer.RunSourceIndexing();
     }

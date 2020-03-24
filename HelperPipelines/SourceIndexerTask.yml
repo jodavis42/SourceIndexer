@@ -4,7 +4,7 @@ parameters:
   SourceRoot: '$(Build.Repository.LocalPath)'
   WorkingDir: '$(Build.BinariesDirectory)'
   SearchPattern: '**.pdb'
-  BackendType: 'GitHub'
+  BackendType: '"GitHub"'
   InstallPath: '$(Pipeline.Workspace)\CustomTools\SourceIndexer'
   VerboseMode: '-v'
 
