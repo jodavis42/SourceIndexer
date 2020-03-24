@@ -7,6 +7,7 @@ parameters:
   BackendType: '"GitHub"'
   InstallPath: '$(Pipeline.Workspace)\CustomTools\SourceIndexer'
   VerboseMode: '-v'
+  Version: '2020.3.24.3'
 
 steps:
   - task: NuGetToolInstaller@1
@@ -14,7 +15,7 @@ steps:
     continueOnError: true
     inputs:
       versionSpec: 
-
+  
   - task: DownloadPackage@1
     displayName: 'Downloading Source Indexer'
     continueOnError: true
@@ -23,7 +24,7 @@ steps:
       feed: '/c3b89593-823f-4af1-917c-1a9cabbf774c'
       view: '084f7b5d-8ad2-4443-88da-28dab062cd3e'
       definition: 'bb4b0649-efaa-48f3-afd0-3c148f3cf82a'
-      version: '1.0.1-CI-20200320-024852'
+      version: '${{parameters.Version}}'
       downloadPath: '${{parameters.InstallPath}}'
 
   - task: CmdLine@2
