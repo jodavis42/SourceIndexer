@@ -28,8 +28,8 @@ namespace SourceIndexer
     public string RepositoryName = "";
     public string RepositoryPath = "";
     public string RepositoryType = "";
+    public string RepositoryUrl = "";
     public string CurrentId = "";
-    public string Location = "";
 
     public RepositoryInfo Clone()
     {
@@ -38,7 +38,7 @@ namespace SourceIndexer
       clone.RepositoryPath = RepositoryPath;
       clone.RepositoryType = RepositoryType;
       clone.CurrentId = CurrentId;
-      clone.Location = Location;
+      clone.RepositoryUrl = RepositoryUrl;
       foreach(var file in SourceFiles)
       {
         clone.SourceFiles.Add(file.Clone());

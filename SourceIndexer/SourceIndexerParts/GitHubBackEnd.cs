@@ -28,7 +28,7 @@ namespace SourceIndexer
       {
         string organization = "";
         string project = "";
-        ExtractRepoInfo(repo.Location, ref organization, ref project);
+        ExtractRepoInfo(repo.RepositoryUrl, ref organization, ref project);
         foreach (var file in repo.SourceFiles)
         {
           builder.AppendLine(string.Format("{0}*{1}*{2}*{3}*{4}", file.PdbFilePath, organization, project, repo.CurrentId, file.RelativePath));

@@ -27,7 +27,7 @@ namespace SourceIndexer
       {
         foreach (var file in repo.SourceFiles)
         {
-          builder.AppendLine(string.Format("{0}*{1}*{2}*{3}*{4}", file.PdbFilePath, repo.RepositoryType, repo.RepositoryName, repo.CurrentId, file.RelativePath));
+          builder.AppendLine(string.Format("{0}*{1}*{2}*{3}*{4}", file.PdbFilePath, repo.RepositoryType, repo.RepositoryUrl, repo.CurrentId, file.RelativePath));
         }
       }
       builder.AppendLine("SRCSRV: end------------------------------------------------");

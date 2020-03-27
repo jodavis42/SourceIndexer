@@ -16,7 +16,7 @@ namespace SourceIndexer
         pdbFiles = remainingPdbFiles;
 
 
-        Config.Logger.Log(VerbosityLevel.Basic, string.Format("Repository {0} found with {1} matching files:", repo.Location, repo.SourceFiles.Count));
+        Config.Logger.Log(VerbosityLevel.Basic, string.Format("Repository {0} found with {1} matching files:", repo.RepositoryUrl, repo.SourceFiles.Count));
         if (Config.Logger.IsVerboseEnough(VerbosityLevel.Detailed))
         {
           foreach (var file in repo.SourceFiles)
@@ -47,10 +47,10 @@ namespace SourceIndexer
           repoInfo.RepositoryType = "git";
           repoInfo.RepositoryPath = repo;
           repoInfo.CurrentId = Git.GetRevisionSha(repo);
-          repoInfo.Location = Git.FindRemoteUrl(repo);
+          repoInfo.RepositoryUrl = Git.FindRemoteUrl(repo);
           var gitFiles = Git.GetFileList(repoInfo.RepositoryPath);
 
-          Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo '{0}' with remote '{1}' at path '{2}' has file list:", repoInfo.RepositoryName, repoInfo.Location, repoInfo.RepositoryPath));
+          Config.Logger.Log(VerbosityLevel.Detailed, string.Format("Git repo '{0}' with remote '{1}' at path '{2}' has file list:", repoInfo.RepositoryName, repoInfo.RepositoryUrl, repoInfo.RepositoryPath));
           foreach (var relativePath in gitFiles)
           {
             var sourceFile = new SourceFile();
@@ -73,7 +73,7 @@ namespace SourceIndexer
           }
 
           repositories.Repositories.Add(repoInfo);
-          Config.Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module '{0}' at path '{1}' at sha '{2}' with remote '{3}'", repoInfo.RepositoryName, repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.Location));
+          Config.Logger.Log(VerbosityLevel.Basic, string.Format("Found Git module '{0}' at path '{1}' at sha '{2}' with remote '{3}'", repoInfo.RepositoryName, repoInfo.RepositoryPath, repoInfo.CurrentId, repoInfo.RepositoryUrl));
         });
         task.Start();
         tasks.Add(task);
