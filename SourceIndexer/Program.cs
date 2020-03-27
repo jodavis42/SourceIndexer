@@ -68,13 +68,18 @@ namespace SourceIndexer
         logger.Log(VerbosityLevel.Detailed, "Using github backend");
         return new GitHubBackEnd();
       }
+      else if (backendType == "githubresolver")
+      {
+        logger.Log(VerbosityLevel.Detailed, "Using github resolver backend");
+        return new GitHubResolverBackEnd();
+      }
       else if (backendType == "cmd")
       {
         logger.Log(VerbosityLevel.Detailed, "Using cmd backend");
         return new CmdBackEnd();
       }
-      logger.Log(VerbosityLevel.Detailed, "Falling back to cmd backend");
-      return new CmdBackEnd();
+      logger.Log(VerbosityLevel.Detailed, "Falling back to github resolver backend");
+      return new GitHubResolverBackEnd();
     }
 
     static void ParseSucceeded(Options options)

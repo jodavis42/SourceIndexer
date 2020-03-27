@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SourceIndexer
@@ -88,6 +81,7 @@ namespace SourceIndexer
 
     private void Form1_Load(object sender, EventArgs e)
     {
+      this.BackendComboBox.Items.Add(new GitHubResolverBackEnd());
       this.BackendComboBox.Items.Add(new CmdBackEnd());
       this.BackendComboBox.Items.Add(new GitBackEnd());
       this.BackendComboBox.Items.Add(new GitHubBackEnd());
